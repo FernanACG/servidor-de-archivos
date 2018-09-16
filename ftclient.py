@@ -56,24 +56,25 @@ def uploadFile(context, username, filename, servers, proxy):
 			shacu.append(sha1bt)
 			s = sockets[part % len(sockets)]
 			s.send_multipart([b"upload", filename, bt, sha1bt, completeSha1])
-
+			print("hola soy elfo")
 			response = s.recv()
 			print("Received reply for part {} ".format(part))
 			part = part + 1
 			if len(bt) < partSize:
 				finished = True
-
-		dicc = index(username, filename, shacu, completeSha1)
-		print (type(dicc), dicc)
-		# proxy.send_multipart(b"table", dicc)
-		# r = proxy.recv()
-		# print (r)
+		index = {}
+		index[username] = []
+		index[username].append(filename)
+		index[username].append(shacomplete)
+		index[username].append(shacu)
+		print (index)
+		proxy.send_multipart([b"table", index])
+		r = proxy.recv()
+		print (r)
 
 def index(username, filename, shacu, shacomplete):
-	# nombre archivo, sha complete, sha1 c/u
-	# index = {'filename':filename, 'sha_cada_parte':shacu, 'shacomplete': shacomplete}
-	index = {}
-	index[username] = filename
+	#nombre archivo, sha complete, sha1 c/u
+	#index = {'filename':filename, 'sha_cada_parte':shacu, 'shacomplete': shacomplete}
 	return index
 
 

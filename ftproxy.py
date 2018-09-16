@@ -23,6 +23,7 @@ def main():
 			if operation == b"availableServers":
 				clients.send_multipart(servAddresses)
 			if operation == b"table":
+				print("aca va la tabla")
 				clients.send(b"table")
 			print(msg)
 

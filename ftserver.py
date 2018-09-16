@@ -27,6 +27,7 @@ def main():
 		print("Waitting for users!")
 		operation, *rest = clients.recv_multipart()
 		if operation == b"upload":
+			print("almenos entre")
 			filename, byts, sha1byts, sha1complete = rest
 			storeAs = serversFolder + sha1byts.decode("ascii")
 			print("Storing {}".format(storeAs))
