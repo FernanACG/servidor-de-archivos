@@ -25,7 +25,8 @@ def main():
 
 	while True:
 		print("Waitting for users!")
-		operation, *rest = clients.recv_multipart()
+		operation, *rest = clients.recv_multipart() # ERROR
+		print ("Esta es la operacion: ", operation)
 		if operation == b"upload":
 			print("almenos entre")
 			filename, byts, sha1byts, sha1complete = rest
@@ -35,12 +36,10 @@ def main():
 				f.write(byts)
 			print("Uploaded as {}".format(storeAs))
 
-		if operation == b"download":
-			print('Not implemented yet')
-
-
 		else:
 			print("Unsupported operation: {}".format(operation))
+
+
 		clients.send(b"Done")
 
 if __name__ == '__main__':

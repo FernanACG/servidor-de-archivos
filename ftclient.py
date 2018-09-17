@@ -38,6 +38,12 @@ def computeHash(bytes):
 
 def uploadFile(context, username, filename, servers, proxy):
 	sockets = []
+	shacu = []
+	index = {}
+	index[username] = []
+	index[username].append(filename)
+	print ("servers: ", servers)
+
 	for ad in servers:
 		s = context.socket(zmq.REQ)
 		s.connect("tcp://"+ ad.decode("ascii"))
@@ -46,7 +52,6 @@ def uploadFile(context, username, filename, servers, proxy):
 	with open(filename, "rb") as f:
 		completeSha1= bytes(computeHashFile(filename), "ascii")
 		finished = False
-		shacu = []
 		part = 0
 		while not finished:
 			print("Uploading part {}".format(part))
@@ -55,22 +60,20 @@ def uploadFile(context, username, filename, servers, proxy):
 			sha1bt = bytes(computeHash(bt), "ascii")
 			shacu.append(sha1bt)
 			s = sockets[part % len(sockets)]
-			s.send_multipart([b"upload", filename, bt, sha1bt, completeSha1])
+			s.send_multipart([b"upload", filename, bt, sha1bt, completeSha1]) # ERROR
 			print("hola soy elfo")
 			response = s.recv()
 			print("Received reply for part {} ".format(part))
 			part = part + 1
 			if len(bt) < partSize:
 				finished = True
-		index = {}
-		index[username] = []
-		index[username].append(filename)
-		index[username].append(shacomplete)
-		index[username].append(shacu)
-		print (index)
-		proxy.send_multipart([b"table", index])
-		r = proxy.recv()
-		print (r)
+
+	index[username].append(completeSha1)
+	index[username].append(shacu)
+	print (index)
+	proxy.send_multipart([b"table", bytes(str(index), 'ascii')])
+	r = proxy.recv()
+	print (r)
 
 def index(username, filename, shacu, shacomplete):
 	#nombre archivo, sha complete, sha1 c/u
